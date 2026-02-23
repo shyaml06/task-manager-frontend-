@@ -1,0 +1,56 @@
+/* Admin Layout Styles */
+
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.admin-sidebar {
+  width: 220px;
+  background: #1e293b;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.admin-logo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.admin-link {
+  color: white;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.admin-link:hover {
+  background-color: #334155; /* Lighter slate color on hover */
+}
+
+.admin-logout-btn {
+  margin-top: auto; /* Pushes the button to the bottom */
+  padding: 10px;
+  background: #ef4444;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.admin-logout-btn:hover {
+  background: #dc2626; /* Darker red on hover */
+}
+
+.admin-main-content {
+  flex: 1; /* Takes up the remaining width */
+  background: #f4f6f9;
+  padding: 25px;
+}

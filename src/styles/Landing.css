@@ -1,0 +1,194 @@
+/* Landing.css */
+
+.landing-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar */
+.landing-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+  background-color: #0f172a;
+  color: white;
+}
+
+.landing-logo {
+  font-size: 24px;
+  margin: 0;
+}
+
+.btn-login {
+  margin-right: 15px;
+  padding: 8px 16px;
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-login:hover {
+  background-color: white;
+  color: #0f172a;
+}
+
+.btn-signup {
+  padding: 8px 16px;
+  background-color: #22c55e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-signup:hover {
+  background-color: #16a34a;
+}
+
+/* Hero Section */
+.landing-hero {
+  text-align: center;
+  padding: 120px 20px;
+  background: linear-gradient(to right, #2563eb, #1e40af);
+  color: white;
+}
+
+.landing-hero h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.landing-hero p {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+  opacity: 0.9;
+}
+
+.btn-cta {
+  padding: 14px 28px;
+  background-color: #22c55e;
+  color: white;
+  border: none;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-cta:hover {
+  background-color: #16a34a;
+  transform: translateY(-2px);
+}
+
+/* Sections */
+.landing-features {
+  padding: 80px 40px;
+  text-align: center;
+}
+
+.landing-roles {
+  background-color: #e2e8f0;
+  padding: 80px 40px;
+  text-align: center;
+}
+
+.landing-cta-section {
+  padding: 80px 20px;
+  text-align: center;
+  background-color: #0f172a;
+  color: white;
+}
+
+.landing-cta-section h2 {
+  margin-top: 0;
+}
+
+.landing-cta-section p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  color: #cbd5e1;
+}
+
+/* Grids */
+.feature-grid,
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Cards */
+.landing-card {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  text-align: left;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.landing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.landing-card h4, 
+.landing-card h3 {
+  margin-top: 0;
+  color: #1e293b;
+  font-size: 1.25rem;
+}
+
+.landing-card p {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.landing-card ul {
+  padding-left: 20px;
+  color: #64748b;
+  line-height: 1.8;
+}
+
+/* Footer */
+.landing-footer {
+  text-align: center;
+  padding: 24px;
+  background-color: #020617;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.landing-footer p {
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .landing-nav {
+    padding: 20px;
+  }
+  .landing-hero {
+    padding: 80px 20px;
+  }
+  .landing-hero h1 {
+    font-size: 2.2rem;
+  }
+}

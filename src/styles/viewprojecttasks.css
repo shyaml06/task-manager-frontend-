@@ -1,0 +1,94 @@
+/* ViewProjectTasks Layout */
+
+.tasks-container {
+  width: 80%;
+  margin: 40px auto;
+  font-family: Arial, sans-serif;
+}
+
+.back-btn {
+  margin-bottom: 15px;
+  padding: 6px 12px;
+  cursor: pointer;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.back-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.tasks-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Added styling for form inputs */
+.task-form input,
+.task-form textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.task-form input:focus,
+.task-form textarea:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.submit-btn {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.submit-btn:disabled {
+  background-color: #99c2ff;
+  cursor: not-allowed;
+}
+
+.tasks-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Added borders and padding to make the table readable */
+.tasks-table th,
+.tasks-table td {
+  border: 1px solid #ddd;
+  padding: 12px 8px;
+  text-align: left;
+}
+
+.tasks-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+}

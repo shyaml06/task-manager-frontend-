@@ -1,0 +1,170 @@
+/* Projects.css */
+
+.projects-container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 40px auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #1e293b;
+}
+
+.projects-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.projects-header h2 {
+  margin: 0;
+  font-size: 2rem;
+  color: #0f172a;
+}
+
+.btn-back {
+  padding: 8px 16px;
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.projects-error {
+  color: #b91c1c;
+  background-color: #fee2e2;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #f87171;
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+/* Two-column layout */
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+/* Cards */
+.projects-card {
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.projects-card h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #334155;
+  font-size: 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 12px;
+}
+
+/* Project List */
+.projects-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 400px; /* Optional: adds a scrollbar if the list gets too long */
+  overflow-y: auto;
+}
+
+.project-item {
+  padding: 16px 0;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.project-item:last-child {
+  border-bottom: none;
+}
+
+.project-item b {
+  color: #0f172a;
+  font-size: 1.1rem;
+}
+
+.project-item small {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.no-projects {
+  color: #94a3b8;
+  font-style: italic;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* Form Styles */
+.project-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+textarea.form-input {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 8px;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.btn-submit:disabled {
+  background-color: #9cbce0;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustment */
+@media (max-width: 768px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+}
