@@ -8,6 +8,7 @@ import Projects from "./Pages/Projects";
 import ViewProjectTasks from "./Pages/ViewProjectTasks";
 import AdminRoutes from "./admin/AdminRoutes";
 import Landing from "./Pages/LandingPage";
+import KanbanBoard from "./admin/KanBoard";
 function App() {
   return (
     <BrowserRouter>
@@ -21,6 +22,7 @@ function App() {
         <Route path="/tasks/add" element={<AddTask />} />
         <Route path="/projects" element={< Projects/>} />
         <Route path="/projects/:project_id/tasks" element={<ViewProjectTasks/>}/>
+        <Route path="/vis" element={<KanbanBoard/>}/>
 
 
       </Routes>
