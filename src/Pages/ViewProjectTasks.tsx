@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
-// --- NEW CALENDAR IMPORTS ---
+// --- CALENDAR IMPORTS ---
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -47,13 +47,20 @@ export default function ViewProjectTasks() {
   const [columns, setColumns] = useState({});
   const [rawTasks, setRawTasks] = useState([]);
   const [viewMode, setViewMode] = useState("board");
-  const [users, setUsers] = useState([]); // NEW: State to hold assignable users
+  const [users, setUsers] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const [form, setForm] = useState({ title: "", description: "", due_date: "" });
+
+  // ==========================
+  // AI Generation States
+  // ==========================
+  const [showAIModal, setShowAIModal] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [generatingAI, setGeneratingAI] = useState(false);
 
   // ==========================
   // Handle Task Assignment
@@ -65,8 +72,6 @@ export default function ViewProjectTasks() {
         { assigned_to: userId ? Number(userId) : null },
         { withCredentials: true }
       );
-
-      // Refresh the board to show the updated data
       fetchTasks();
     } catch (err) {
       console.error("Failed to assign task", err);
@@ -79,7 +84,6 @@ export default function ViewProjectTasks() {
   // ==========================
   const fetchUsers = async () => {
     try {
-      // Adjust this URL if your endpoint is different!
       const res = await axios.get(`${API}/projects/users/assignable/`, { withCredentials: true });
       setUsers(res.data.data || res.data);
     } catch (err) {
@@ -97,10 +101,8 @@ export default function ViewProjectTasks() {
       });
 
       const data = res.data.data || res.data;
-
       setRawTasks(data);
       setColumns(formatTasksForBoard(data));
-
     } catch (err) {
       if (err.response?.status === 401) {
         navigate("/login");
@@ -114,61 +116,40 @@ export default function ViewProjectTasks() {
 
   useEffect(() => {
     fetchTasks();
-    fetchUsers(); // Fetch users when the component mounts
+    fetchUsers();
   }, [project_id]);
 
   // ==========================
+  // Handle AI Task Generation
+  // ==========================
+  const handleAIGenerate = async () => {
+    if (!aiPrompt.trim()) return;
+    setGeneratingAI(true);
+    setError("");
+
+    try {
+      await axios.post(
+        `${API}/projects/${project_id}/ai-workflow/`,
+        { prompt: aiPrompt },
+        { withCredentials: true }
+      );
+
+      setShowAIModal(false);
+      setAiPrompt("");
+      fetchTasks();
+    } catch (err) {
+      console.error("AI Generation failed", err);
+      setError("Failed to generate tasks using AI. Please try again.");
+    } finally {
+      setGeneratingAI(false);
+    }
+  };
+
+  // ==========================
   // Handle Drag & Drop (Board)
-  // // ==========================
-  // const onDragEnd = async (result) => {
-  //   const { source, destination } = result;
-
-  //   if (!destination) return;
-
-  //   const sourceColId = source.droppableId;
-  //   const destColId = destination.droppableId;
-
-  //   const sourceCol = columns[sourceColId];
-  //   const destCol = columns[destColId];
-
-  //   const sourceItems = [...sourceCol.items];
-  //   const destItems = [...destCol.items];
-
-  //   if (sourceColId === destColId) {
-  //     const [removed] = sourceItems.splice(source.index, 1);
-  //     sourceItems.splice(destination.index, 0, removed);
-  //     setColumns({ ...columns, [sourceColId]: { ...sourceCol, items: sourceItems } });
-  //     return;
-  //   }
-
-  //   // "removed" is your entire task object! 
-  //   // It contains removed.id, removed.title, removed.assigned_to, etc.
-  //   const [removed] = sourceItems.splice(source.index, 1);
-  //   destItems.splice(destination.index, 0, removed);
-
-  //   setColumns({
-  //     ...columns,
-  //     [sourceColId]: { ...sourceCol, items: sourceItems },
-  //     [destColId]: { ...destCol, items: destItems },
-  //   });
-
-  //   try {
-  //     await axios.put(
-  //       `${API}/projects/task/${removed.id}/update/`,
-  //       {
-  //         status: destColId,
-  //         assigned_to: removed.assigned_to // <--- Pass it to your backend right here
-  //       },
-  //       { withCredentials: true }
-  //     );
-  //     fetchTasks();
-  //   } catch (err) {
-  //     setError("Failed to save task movement. Please refresh.");
-  //   }
-  // };
+  // ==========================
   const onDragEnd = async (result) => {
     const { source, destination } = result;
-
     if (!destination) return;
 
     const sourceColId = source.droppableId;
@@ -187,8 +168,6 @@ export default function ViewProjectTasks() {
       return;
     }
 
-    // "removed" is your entire task object! 
-    // It contains removed.id, removed.title, removed.assigned_to, etc.
     const [removed] = sourceItems.splice(source.index, 1);
     destItems.splice(destination.index, 0, removed);
 
@@ -203,30 +182,25 @@ export default function ViewProjectTasks() {
         `${API}/projects/task/${removed.id}/update/`,
         {
           status: destColId,
-          assigned_to: removed.assigned_to // <--- Pass it to your backend right here
+          assigned_to: removed.assigned_to
         },
         { withCredentials: true }
       );
-      console.log(res);
 
       if (res.data.success === false) {
         alert("You are not authorized to perform this action");
       }
       fetchTasks();
     } catch (err) {
-      if (err.status === 403) {
+      if (err.status === 403 || err.status === 400) {
         alert("You are not authorized to perform this action");
-      }
-      else if (err.status === 400) {
-        alert("You are not authorized to perform this action");
-      }
-      else {
+      } else {
         alert("Something went wrong");
       }
-
       setError("Failed to save task movement. Please refresh.");
     }
   };
+
   // ==========================
   // Add Task Form Handlers
   // ==========================
@@ -265,7 +239,6 @@ export default function ViewProjectTasks() {
       allDay: true,
       resource: task
     }));
-    
 
   // ==========================
   // Render
@@ -292,9 +265,9 @@ export default function ViewProjectTasks() {
       </div>
 
       {/* ======================
-          View Toggles
+          View Toggles & AI Button
       ====================== */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
+      <div style={{ display: "flex", gap: "10px", marginBottom: "15px", flexWrap: "wrap" }}>
         <button
           onClick={() => setViewMode("board")}
           style={{ padding: "8px 16px", cursor: "pointer", fontWeight: "bold", background: viewMode === "board" ? "#007bff" : "#e2e8f0", color: viewMode === "board" ? "white" : "black", border: "none", borderRadius: "4px" }}
@@ -307,13 +280,51 @@ export default function ViewProjectTasks() {
         >
           Calendar View
         </button>
+
+        <button
+          onClick={() => setShowAIModal(!showAIModal)}
+          style={{ padding: "8px 16px", cursor: "pointer", fontWeight: "bold", background: "#8b5cf6", color: "white", border: "none", borderRadius: "4px", marginLeft: "auto" }}
+        >
+          ✨ Generate Tasks with AI
+        </button>
       </div>
+
+      {/* ======================
+          AI Prompt Modal
+      ====================== */}
+      {showAIModal && (
+        <div style={{ background: "#f8fafc", padding: "15px", borderRadius: "6px", border: "1px solid #c4b5fd", marginBottom: "20px" }}>
+          <h4 style={{ marginTop: 0, color: "#5b21b6" }}>Describe what needs to be done</h4>
+          <textarea
+            rows="3"
+            placeholder="e.g., Build a user authentication system with a login page, password reset, and JWT integration..."
+            value={aiPrompt}
+            onChange={(e) => setAiPrompt(e.target.value)}
+            style={{ width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc", marginBottom: "10px", fontFamily: "inherit" }}
+          />
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button
+              onClick={handleAIGenerate}
+              disabled={generatingAI || !aiPrompt.trim()}
+              style={{ padding: "8px 16px", background: generatingAI ? "#ccc" : "#8b5cf6", color: "white", border: "none", borderRadius: "4px", cursor: generatingAI ? "not-allowed" : "pointer" }}
+            >
+              {generatingAI ? "🧠 Gemini is thinking..." : "Generate & Add Tasks"}
+            </button>
+            <button
+              onClick={() => setShowAIModal(false)}
+              disabled={generatingAI}
+              style={{ padding: "8px 16px", background: "#e2e8f0", color: "black", border: "none", borderRadius: "4px", cursor: "pointer" }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ======================
           Dynamic Rendering
       ====================== */}
       {viewMode === "board" ? (
-
         // KANBAN BOARD
         <div className="tasks-card" style={{ overflowX: "auto" }}>
           {Object.keys(columns).length > 0 && (
@@ -362,7 +373,7 @@ export default function ViewProjectTasks() {
                                   {/* --- ASSIGNMENT DROPDOWN --- */}
                                   <div style={{ marginTop: "10px", borderTop: "1px solid #eee", paddingTop: "8px" }}>
                                     <label style={{ fontSize: "11px", color: "#666", display: "block", marginBottom: "3px" }}>
-                                      Assignee:{ }
+                                      Assignee:
                                     </label>
                                     <select
                                       value={item.assigned_to || ""}
@@ -376,7 +387,7 @@ export default function ViewProjectTasks() {
                                         cursor: "pointer"
                                       }}
                                     >
-                                      <option value="">{item.assigned_to}</option>
+                                      <option value="">{item.assigned_to ? 'Unassigned' : 'Select User'}</option>
                                       {users.map(user => (
                                         <option key={user.id} value={user.id}>
                                           {user.username}
@@ -399,9 +410,7 @@ export default function ViewProjectTasks() {
             </div>
           )}
         </div>
-
       ) : (
-
         // CALENDAR VIEW
         <div className="tasks-card" style={{ height: "600px" }}>
           <Calendar
@@ -414,9 +423,7 @@ export default function ViewProjectTasks() {
             defaultView="month"
           />
         </div>
-
       )}
-
     </div>
   );
 }
