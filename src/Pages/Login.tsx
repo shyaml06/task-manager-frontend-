@@ -1,13 +1,15 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "../styles/Login.css"; // Import the CSS file here!
 
 export default function Login() {
   const navigate = useNavigate();
   const [serverError, setServerError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
 
   // ✅ Validation schema
   const validationSchema = Yup.object({
@@ -35,7 +37,7 @@ export default function Login() {
               values,
               { withCredentials: true }
             );
-            
+
             // 🔐 Verify session
             await axios.get(
               "http://localhost:8000/auth/me/",
@@ -78,11 +80,14 @@ export default function Login() {
             {/* Password */}
             <div className="input-group">
               <Field
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Password"
                 className="login-input"
               />
+              <button onClick={() => setShowPassword(!showPassword)} className="password-toggle" type="button">
+                {showPassword ? "Hide" : "Show"}
+              </button>
               <ErrorMessage
                 name="password"
                 component="div"
@@ -91,9 +96,9 @@ export default function Login() {
             </div>
 
             {/* Submit */}
-            <button 
-              type="submit" 
-              className="login-button" 
+            <button
+              type="submit"
+              className="login-button"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Logging in..." : "Login"}
@@ -105,7 +110,11 @@ export default function Login() {
             )}
           </Form>
         )}
+
       </Formik>
+      <p className="forgot-password">
+        <Link to="/forgot-password">Forgot Password?</Link>
+      </p>
     </div>
   );
 }

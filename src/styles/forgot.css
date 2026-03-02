@@ -1,0 +1,77 @@
+/* Full page background */
+.forgot-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient();
+    font-family: Arial, sans-serif;
+}
+
+/* Card */
+.forgot-card {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    width: 380px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+/* Heading */
+.forgot-card h2 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Subtitle */
+.subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+/* Input */
+.input-field {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    transition: border 0.3s ease;
+}
+
+.input-field:focus {
+    outline: none;
+    border: 1px solid #667eea;
+}
+
+/* Button */
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #667eea;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.submit-btn:hover {
+    background: #5563d6;
+}
+
+.submit-btn:active {
+    transform: scale(0.98);
+}
+
+/* Message */
+.message {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #333;
+}

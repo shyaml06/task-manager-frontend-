@@ -9,6 +9,9 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import "../styles/viewprojectTasks.css";
+// --- REACT FLOW IMPORTS ---
+import ReactFlow, { Background, Controls, MiniMap } from "reactflow";
+import "reactflow/dist/style.css";
 
 const API = "http://localhost:8000";
 
@@ -37,6 +40,65 @@ const formatTasksForBoard = (tasksArray) => {
   });
 
   return board;
+};
+// ==========================================
+// Helper: Format DB Tasks for React Flow
+// ==========================================
+const formatTasksForWorkflow = (tasksArray) => {
+  const nodes = [];
+  const edges = [];
+
+  // Sort tasks sequentially by ID (assuming order of creation = workflow sequence)
+  const sortedTasks = [...tasksArray].sort((a, b) => a.id - b.id);
+
+  sortedTasks.forEach((task, index) => {
+    // Layout nodes horizontally
+    const x = index * 250;
+    const y = 150;
+
+    // Color code the node borders based on Kanban status
+    let borderColor = "#ccc"; // Pending/Default
+    if (task.status === "completed") borderColor = "#22c55e"; // Green
+    if (task.status === "in_progress") borderColor = "#3b82f6"; // Blue
+
+    nodes.push({
+      id: String(task.id),
+      position: { x, y },
+      data: {
+        label: (
+          <div style={{ padding: "5px", textAlign: "left" }}>
+            <strong style={{ fontSize: "14px", color: "#333", display: "block", marginBottom: "5px" }}>
+              {task.title}
+            </strong>
+            <div style={{ fontSize: "11px", color: "#666" }}>
+              Status: <span style={{ textTransform: "uppercase", fontWeight: "bold", color: borderColor }}>{task.status || "Pending"}</span>
+            </div>
+            {task.due_date && <div style={{ fontSize: "11px", color: "#d97706" }}>Due: {task.due_date}</div>}
+          </div>
+        )
+      },
+      style: {
+        background: "#fff",
+        border: `2px solid ${borderColor}`,
+        borderRadius: "8px",
+        width: 180,
+        boxShadow: "0 4px 6px rgba(0,0,0,0.05)"
+      }
+    });
+
+    // Draw an animated connecting line to the next task in the workflow
+    if (index < sortedTasks.length - 1) {
+      edges.push({
+        id: `e${task.id}-${sortedTasks[index + 1].id}`,
+        source: String(task.id),
+        target: String(sortedTasks[index + 1].id),
+        animated: true,
+        style: { stroke: "#8b5cf6", strokeWidth: 2 }, // Purple line linking tasks
+      });
+    }
+  });
+
+  return { nodes, edges };
 };
 
 export default function ViewProjectTasks() {
@@ -280,6 +342,13 @@ export default function ViewProjectTasks() {
         >
           Calendar View
         </button>
+        {/* NEW WORKFLOW VISUALIZER BUTTON */}
+        <button
+          onClick={() => setViewMode("workflow")}
+          style={{ padding: "8px 16px", cursor: "pointer", fontWeight: "bold", background: viewMode === "workflow" ? "#007bff" : "#e2e8f0", color: viewMode === "workflow" ? "white" : "black", border: "none", borderRadius: "4px" }}
+        >
+          Workflow Visualizer
+        </button>
 
         <button
           onClick={() => setShowAIModal(!showAIModal)}
@@ -320,11 +389,11 @@ export default function ViewProjectTasks() {
           </div>
         </div>
       )}
-
       {/* ======================
           Dynamic Rendering
       ====================== */}
-      {viewMode === "board" ? (
+
+      {viewMode === "board" && (
         // KANBAN BOARD
         <div className="tasks-card" style={{ overflowX: "auto" }}>
           {Object.keys(columns).length > 0 && (
@@ -410,7 +479,9 @@ export default function ViewProjectTasks() {
             </div>
           )}
         </div>
-      ) : (
+      )}
+
+      {viewMode === "calendar" && (
         // CALENDAR VIEW
         <div className="tasks-card" style={{ height: "600px" }}>
           <Calendar
@@ -424,6 +495,23 @@ export default function ViewProjectTasks() {
           />
         </div>
       )}
+
+      {viewMode === "workflow" && (
+        // NEW WORKFLOW VISUALIZER VIEW
+        <div className="tasks-card" style={{ height: "600px", width: "100%", border: "1px solid #ddd", borderRadius: "8px" }}>
+          <ReactFlow
+            nodes={formatTasksForWorkflow(rawTasks).nodes}
+            edges={formatTasksForWorkflow(rawTasks).edges}
+            fitView
+            attributionPosition="bottom-right"
+          >
+            <Background color="#ccc" gap={16} />
+            <Controls />
+            <MiniMap nodeStrokeColor={(n) => n.style.borderColor || "#ccc"} nodeColor="#fff" nodeBorderRadius={2} />
+          </ReactFlow>
+        </div>
+      )}
+
     </div>
   );
 }
