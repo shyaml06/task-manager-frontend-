@@ -2,6 +2,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "@/API/interceptor";
 
 
 export default function AddTask() {
@@ -39,10 +40,10 @@ export default function AddTask() {
 
           try {
 
-            await axios.post(
-              "http://localhost:8000/api/tasks/",
+            await api.post(
+              "tasks/",
               values,
-              { withCredentials: true }
+           
             );
 
             alert("Task Added!");

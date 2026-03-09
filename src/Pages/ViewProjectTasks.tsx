@@ -12,7 +12,7 @@ import "../styles/viewprojectTasks.css";
 // --- REACT FLOW IMPORTS ---
 import ReactFlow, { Background, Controls, MiniMap } from "reactflow";
 import "reactflow/dist/style.css";
-
+import api from "@/API/interceptor";
 const API = "http://localhost:8000";
 
 // Setup the localizer for the calendar
@@ -45,8 +45,8 @@ const formatTasksForBoard = (tasksArray) => {
 // Helper: Format DB Tasks for React Flow
 // ==========================================
 const formatTasksForWorkflow = (tasksArray) => {
-  const nodes = [];
-  const edges = [];
+  const nodes:any[] = [];
+  const edges:any[]= [];
 
   // Sort tasks sequentially by ID (assuming order of creation = workflow sequence)
   const sortedTasks = [...tasksArray].sort((a, b) => a.id - b.id);
@@ -129,13 +129,14 @@ export default function ViewProjectTasks() {
   // ==========================
   const handleAssignTask = async (taskId, userId) => {
     try {
-      await axios.patch(
-        `${API}/projects/task/${taskId}/assign/`,
+      await api.patch(
+        `projects/task/${taskId}/assign/`,
         { assigned_to: userId ? Number(userId) : null },
-        { withCredentials: true }
+
       );
       fetchTasks();
     } catch (err) {
+      
       console.error("Failed to assign task", err);
       setError("Failed to assign task. Please try again.");
     }
@@ -146,7 +147,7 @@ export default function ViewProjectTasks() {
   // ==========================
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${API}/projects/users/assignable/`, { withCredentials: true });
+      const res = await api.get(`projects/users/assignable/`,);
       setUsers(res.data.data || res.data);
     } catch (err) {
       console.error("Failed to load users", err);
@@ -158,19 +159,15 @@ export default function ViewProjectTasks() {
   // ==========================
   const fetchTasks = async () => {
     try {
-      const res = await axios.get(`${API}/projects/${project_id}/tasks/`, {
-        withCredentials: true,
-      });
+      const res = await api.get(`projects/${project_id}/tasks/`);
 
       const data = res.data.data || res.data;
       setRawTasks(data);
+      
       setColumns(formatTasksForBoard(data));
     } catch (err) {
-      if (err.response?.status === 401) {
-        navigate("/login");
-      } else {
-        setError("Failed to load tasks");
-      }
+      console.log(err);
+      
     } finally {
       setLoading(false);
     }
@@ -515,3 +512,4 @@ export default function ViewProjectTasks() {
     </div>
   );
 }
+

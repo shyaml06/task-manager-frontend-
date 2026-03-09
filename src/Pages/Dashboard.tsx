@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ProjectChart } from "@/Components/Barchart";
 import StatusChart from "@/Components/Piechart";
 import "../styles/Dashboard.css"; // Import the CSS file here!
+import api from "@/API/interceptor";
 
 const API = "http://localhost:8000";
 
@@ -18,8 +19,7 @@ export default function Dashboard() {
 
   const fetchAnalytics = async () => {
     try {
-      const res = await axios.get(`${API}/projects/analytics/`, {
-        withCredentials: true,
+      const res = await api.get(`${API}/projects/analytics/`, {
       });
       setAnalytics(res.data);
     } catch (err) {
@@ -34,7 +34,7 @@ export default function Dashboard() {
     const fetchDashboard = async () => {
       try {
         const [projectRes, statsRes] = await Promise.all([
-          axios.get(`${API}/projects/`, { withCredentials: true }),
+          api.get(`projects/`),
           // axios.get(`${API}/dashboard/stats/`, { withCredentials: true })
         ]);
 
@@ -54,8 +54,7 @@ export default function Dashboard() {
 
     const fetchrole = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/admin/role", {
-          withCredentials: true,
+        const response = await api.get("http://localhost:8000/admin/role", {
         });
         setRole(response.data.Role);
       } catch (err) {
@@ -73,7 +72,7 @@ export default function Dashboard() {
   // ==============================
   const handleLogout = async () => {
     try {
-      await axios.post(`${API}/auth/logout/`, {}, { withCredentials: true });
+      await api.post(`auth/logout/`, {}, { withCredentials: true });
     } catch {}
     navigate("/login");
   };

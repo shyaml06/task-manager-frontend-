@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import ProjectCard from "@/Components/Pagecard";
 import "../styles/Viewtasks.css"; // Make sure to import the CSS file here!
+import api from "@/API/interceptor";
 
 export default function ViewTasks() {
   const API = "http://localhost:8000";
@@ -18,9 +19,8 @@ export default function ViewTasks() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await axios.get(
-          `${API}/projects/`,
-          { withCredentials: true }
+        const res = await api.get(
+          `projects/`,
         );
 
         setProjects(res.data.data || res.data);

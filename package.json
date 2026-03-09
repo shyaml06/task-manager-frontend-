@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
+    "@tanstack/react-query": "^5.90.21",
     "axios": "^1.13.5",
     "formik": "^2.4.9",
     "moment": "^2.30.1",

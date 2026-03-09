@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/Projects.css"; // Import the CSS file here!
-
+import api from "@/API/interceptor";
 const API = "http://localhost:8000";
 
 export default function Projects() {
@@ -29,8 +29,8 @@ export default function Projects() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await axios.get(`${API}/projects/`, {
-          withCredentials: true
+        const res = await api.get(`projects/`, {
+          
         });
         setProjects(res.data.data || res.data);
       } catch (err) {
@@ -66,8 +66,8 @@ export default function Projects() {
     setError("");
 
     try {
-      await axios.post(`${API}/projects/add/`, form, {
-        withCredentials: true
+      await api.post(`projects/add/`, form, {
+       
       });
 
       // Clear form
@@ -79,8 +79,7 @@ export default function Projects() {
       });
 
       // Reload projects
-      const res = await axios.get(`${API}/projects/`, {
-        withCredentials: true
+      const res = await api.get(`projects/`, {
       });
 
       setProjects(res.data.data || res.data);

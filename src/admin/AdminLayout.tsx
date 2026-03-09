@@ -31,6 +31,9 @@ export default function AdminLayout() {
 
         <Link to="/admin" className="admin-link">Dashboard</Link>
         <Link to="/admin/users" className="admin-link">Users</Link>
+        <Link to="/admin/loginreport" className="admin-link">Login Activity</Link>
+
+
 
         <button 
           onClick={logout} 
